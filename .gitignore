@@ -45,3 +45,5 @@ poetry.lock
 
 # Frozen first-edition Hevea HTML pulled from GTP (not make hevea's html/)
 book/html-1e-archive/
+
+.idea
