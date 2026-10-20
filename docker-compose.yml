@@ -1,0 +1,33 @@
+name: thinkdsp
+
+services:
+  # 常驻开发容器：给 PyCharm 的 Docker 解释器用，本身不启动任何服务
+  thinkdsp:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: thinkdsp-dev:latest
+    working_dir: /workspaces/ThinkDSP
+    volumes:
+      - .:/workspaces/ThinkDSP
+    command: sleep infinity
+    tty: true
+    stdin_open: true
+    environment:
+      PYTHONUNBUFFERED: "1"
+
+  # 浏览器 / PyCharm Configured Server 使用的 JupyterLab
+  jupyter:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: thinkdsp-dev:latest
+    working_dir: /workspaces/ThinkDSP
+    volumes:
+      - .:/workspaces/ThinkDSP
+    ports:
+      - "127.0.0.1:8888:8888"
+    command: >
+      /opt/conda/envs/ThinkDSP/bin/jupyter lab
+      --ip=0.0.0.0 --no-browser --allow-root
+      --ServerApp.token=thinkdsp

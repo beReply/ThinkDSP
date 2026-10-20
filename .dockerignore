@@ -1,0 +1,20 @@
+# 构建上下文只需要 Dockerfile 里 COPY 的内容：
+# environment*.yml、pyproject.toml、README.md、LICENSE、thinkdsp/
+.git
+.idea
+.vscode
+.pytest_cache
+**/__pycache__
+**/*.py[cod]
+**/*.egg-info
+.venv
+venv
+ThinkDSP.zip
+book
+nb
+soln
+split
+examples
+data
+figs
+tests

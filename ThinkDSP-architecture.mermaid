@@ -1,0 +1,28 @@
+flowchart TB
+  subgraph HOST["宿主机：你的 Mac"]
+    PROJ["项目目录<br/>~/PycharmProjects/ThinkDSP<br/>源码 · notebook · 数据"]
+    IDE["PyCharm Professional<br/>编辑 · 断点调试 · Notebook UI"]
+    BROWSER["浏览器<br/>http://127.0.0.1:8888"]
+    DD["Docker Desktop<br/>构建镜像 · 管理容器 · 转发端口"]
+  end
+
+  IMG["Docker 镜像 thinkdsp-dev:latest<br/>由 .devcontainer/Dockerfile 构建<br/>environment.yml 创建 conda 环境<br/>environment-dev.yml 安装开发依赖"]
+
+  subgraph CONTAINER["运行中的 Docker 容器"]
+    MNT["项目挂载点<br/>/workspaces/ThinkDSP<br/>compose：bind mount 同一份文件<br/>PyCharm Docker 目标：/tmp/&lt;uuid&gt; 同步副本"]
+    subgraph CONDA["conda 环境 ThinkDSP"]
+      PY["Python 3.12<br/>numpy · scipy · matplotlib<br/>editable 安装的 thinkdsp"]
+    end
+    JS["Jupyter Server / Lab<br/>由环境里的 jupyter 命令启动"]
+    KER["Python Kernel<br/>每个 notebook 一个进程"]
+    JS -- "启动并管理" --> KER
+    KER -- "使用这个解释器" --> PY
+    MNT -- "读写项目文件" --> KER
+  end
+
+  IMG -. "docker build 生成" .-> CONTAINER
+  PROJ -- "bind mount / 自动同步" --> MNT
+  DD -- "创建 · 启动 · exec" --> CONTAINER
+  IDE -- "普通 .py：在容器里运行并断点" --> PY
+  IDE -- "Notebook：连接 Jupyter Server" --> JS
+  BROWSER -- "HTTP :8888" --> JS
